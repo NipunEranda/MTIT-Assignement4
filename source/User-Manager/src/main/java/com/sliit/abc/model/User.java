@@ -8,14 +8,14 @@ public class User {
 	private String initials;
 	private String dob;
 	private String phoneNo;
-	private char gender;
+	private String gender;
 	private String address;
 	
 	public User() {
 		
 	}
 	
-	public User(long id, String firstName, String lastName, String initials, String dob, String phoneNo, char gender, String address) {
+	public User(long id, String firstName, String lastName, String initials, String dob, String phoneNo, String gender, String address) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -51,7 +51,7 @@ public class User {
 		return phoneNo;
 	}
 
-	public char getGender() {
+	public String getGender() {
 		return gender;
 	}
 
@@ -83,7 +83,7 @@ public class User {
 		this.phoneNo = phoneNo;
 	}
 
-	public void setGender(char gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 

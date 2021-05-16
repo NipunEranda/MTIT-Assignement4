@@ -12,12 +12,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.sliit.abc.model.Customer;
+import com.sliit.abc.model.Login;
 import com.sliit.abc.model.Role;
 import com.sliit.abc.util.Crypt;
 import com.sliit.abc.util.DBConnection;
 import com.sliit.abc.util.RandomCode;
 import com.sliit.abc.util.SQLQueryManager;
-import com.sliit.abc.util.SendMail;
 import com.sliit.abc.util.lambdaworks.crypto.SCryptUtil;
 
 public class DBManager {
@@ -38,137 +38,6 @@ public class DBManager {
 			}
 		}
 		return dbObject;
-	}
-
-	// Role Management Class
-	static class RoleClass {
-
-		/*
-		 * private static RoleClass dbObject;
-		 * 
-		 * private RoleClass() { }
-		 * 
-		 * public static RoleClass getInstance() { if (dbObject == null) { synchronized
-		 * (RoleClass.class) { if (dbObject == null) { dbObject = new RoleClass(); } } }
-		 * return dbObject; }
-		 */
-
-		// Role Management Section
-		public static JSONObject insertRole(String roleName, String roleDesc) {
-			JSONObject j = new JSONObject();
-
-			Connection con = null;
-			PreparedStatement ps_insertRole = null;
-
-			try {
-
-				con = DBConnection.connect();
-				ps_insertRole = con.prepareStatement(sqlObject.getINSERT_ROLE());
-				ps_insertRole.setString(1, roleName);
-				ps_insertRole.setString(2, roleDesc);
-
-				if (ps_insertRole.executeUpdate() < 0) {
-					j.put("status", "error");
-				} else {
-					j.put("status", "success");
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (ps_insertRole != null) {
-					try {
-						ps_insertRole.close();
-					} catch (Exception e) {
-						/* ignored */}
-				}
-			}
-
-			return j;
-		}
-
-		public static JSONObject updateRole(String roleId, String roleName, String roleDesc, String isActive) {
-			JSONObject j = new JSONObject();
-
-			Connection con = null;
-			PreparedStatement ps_updateRole = null;
-
-			try {
-
-				con = DBConnection.connect();
-				ps_updateRole = con.prepareStatement(sqlObject.getUPDATE_ROLE());
-				ps_updateRole.setString(1, roleName);
-				ps_updateRole.setString(2, roleDesc);
-				ps_updateRole.setInt(3, Integer.parseInt(isActive));
-				ps_updateRole.setLong(4, Long.parseLong(roleId));
-
-				if (ps_updateRole.executeUpdate() < 0) {
-					j.put("status", "error");
-				} else {
-					j.put("status", "success");
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return j;
-		}
-
-		public static JSONObject deleteRole(String roleId) {
-			JSONObject j = new JSONObject();
-
-			Connection con = null;
-			PreparedStatement ps_deleteRole = null;
-
-			try {
-
-				con = DBConnection.connect();
-				ps_deleteRole = con.prepareStatement(sqlObject.getDELETE_ROLE());
-				ps_deleteRole.setLong(1, Long.parseLong(roleId));
-
-				if (ps_deleteRole.executeUpdate() < 0) {
-					j.put("status", "error");
-				} else {
-					j.put("status", "success");
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return j;
-		}
-
-		public static List<String> getRoleList() {
-			List<String> roleList = new ArrayList<>();
-
-			PreparedStatement ps_getRoleList = null;
-			ResultSet rs_getRoleList = null;
-			Connection con = null;
-
-			try {
-
-				con = DBConnection.connect();
-				ps_getRoleList = con.prepareStatement(sqlObject.getROLE_LIST());
-
-				rs_getRoleList = ps_getRoleList.executeQuery();
-
-				if (rs_getRoleList != null) {
-					while (rs_getRoleList.next()) {
-						Role r = new Role(rs_getRoleList.getLong(1), rs_getRoleList.getString(2),
-								rs_getRoleList.getString(3));
-						roleList.add(r.createRoleJsonObject().toString());
-					}
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			return roleList;
-		}
-
 	}
 
 	// User Management Class
@@ -373,48 +242,6 @@ public class DBManager {
 			return j;
 		}
 
-		public static JSONObject forgotPassword(String email) {
-			String code = RandomCode.GenCode(8);
-			JSONObject j = new JSONObject();
-			Connection con = null;
-			PreparedStatement ps_getIdFromEmail = null;
-			CallableStatement stm = null;
-
-			ResultSet rs_getIdFromEmail = null;
-
-			try {
-				con = DBConnection.connect();
-				ps_getIdFromEmail = con.prepareStatement(sqlObject.getID_FROM_EMAIL());
-				ps_getIdFromEmail.setString(1, email);
-				rs_getIdFromEmail = ps_getIdFromEmail.executeQuery();
-				if (rs_getIdFromEmail.first() != false) {
-					stm = con.prepareCall(sqlObject.getCHANGE_PASSWORD());
-					stm.setString(1, SCryptUtil.scrypt(code, 16, 16, 16));
-					stm.setString(2, email);
-					stm.registerOutParameter(3, Types.INTEGER);
-					stm.execute();
-					if (stm.getInt(3) == 1) {
-						j.put("status", "success");
-						SendMail.sendNewPassword(email, code, "New Password for the User");
-					} else {
-						j.put("status", "error");
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				j.put("status", e.getMessage());
-			} finally {
-				if (stm != null) {
-					try {
-						stm.close();
-					} catch (Exception e) {
-						j.put("status", e.getMessage());
-					}
-				}
-			}
-			return j;
-		}
-
 		public static JSONObject verifyPassword(String email, String currentPassword) {
 
 			JSONObject j = new JSONObject();
@@ -493,82 +320,13 @@ public class DBManager {
 			return j;
 		}
 
-		public static JSONObject emailConfirmation(String email, String confirmationCode) {
-			JSONObject j = new JSONObject();
-
-			Connection con = null;
-			CallableStatement stm = null;
-
-			try {
-
-				con = DBConnection.connect();
-				stm = con.prepareCall(sqlObject.getEMAIL_CONFIRMATION());
-				stm.setString(1, email);
-				stm.setString(2, confirmationCode);
-				stm.registerOutParameter(3, Types.INTEGER);
-				stm.execute();
-				if (stm.getInt(3) == 1) {
-					j.put("status", "success");
-				} else {
-					j.put("status", "error");
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				j.put("status", e.getMessage());
-			} finally {
-				if (stm != null) {
-					try {
-						stm.close();
-					} catch (Exception e) {
-					}
-				}
-			}
-
-			return j;
-		}
-
-		public static JSONObject requestConfirmationCode(String email) {
-			JSONObject j = new JSONObject();
-
-			Connection con = null;
-			CallableStatement stm = null;
-
-			try {
-				String code = RandomCode.GenCode(8);
-				con = DBConnection.connect();
-				stm = con.prepareCall(sqlObject.getREQUEST_CODE());
-				stm.setString(1, code);
-				stm.setString(2, email);
-				stm.registerOutParameter(3, Types.INTEGER);
-				stm.execute();
-				if (stm.getInt(3) == 1) {
-					j.put("status", "success");
-					SendMail.sendConfirmationCode(email, code, "Request Confirmation Code.");
-				} else {
-					j.put("status", "error");
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				if (stm != null) {
-					try {
-						stm.close();
-					} catch (Exception e) {
-						/* ignored */}
-				}
-			}
-			return j;
-		}
-
 	}
 
 	//Customer Management Class
 	static class CustomerClass{
 		
 		public static JSONObject registerCustomer(String firstName, String lastName, String initials, String dob, String phoneNo,
-				String gender, String address, String email, String password, String roleId, String companyName) {
+				String gender, String address, String email, String password) {
 			JSONObject j = new JSONObject();
 			Connection con = null;
 			CallableStatement stm;
@@ -587,15 +345,12 @@ public class DBManager {
 				stm.setString(7, address);
 				stm.setString(8, email);
 				stm.setString(9, generatedSecuredPasswordHash);
-				stm.setLong(10, Long.parseLong(roleId));
+				stm.setLong(10, Long.parseLong("3"));
 				stm.setString(11, code);
-				stm.setString(12, companyName);
-				
-				stm.registerOutParameter(13, Types.INTEGER);
+				stm.registerOutParameter(12, Types.INTEGER);
 				stm.execute();
-				if (stm.getInt(13) == 1) {
+				if (stm.getInt(12) == 1) {
 					j.put("status", "success");
-					SendMail.sendConfirmationCode(email, code, "Confirmation code for new account");
 				} else {
 					j.put("status", "error");
 				}
@@ -607,7 +362,7 @@ public class DBManager {
 			return j;
 		}
 		
-		public static JSONObject updateCustomerDetails(String companyName, String id) {
+		public static JSONObject updateCustomerDetails(String id) {
 			JSONObject j = new JSONObject();
 
 			Connection con = null;
@@ -617,11 +372,10 @@ public class DBManager {
 
 				con = DBConnection.connect();
 				stm = con.prepareCall(sqlObject.getCUSTOMER_UPDATECUSTOMERDETAILS());
-				stm.setString(1, companyName);
-				stm.setLong(8, Long.parseLong(id));
-				stm.registerOutParameter(9, Types.INTEGER);
+				stm.setLong(1, Long.parseLong(id));
+				stm.registerOutParameter(2, Types.INTEGER);
 				stm.execute();
-				if (stm.getInt(9) == 1) {
+				if (stm.getInt(2) == 1) {
 					j.put("status", "success");
 				} else {
 					j.put("status", "error");
@@ -656,8 +410,7 @@ public class DBManager {
 				if (rs != null) {
 					while (rs.next()) {
 						Customer c = new Customer(Long.parseLong(rs.getString(1)), rs.getString(2), rs.getString(3),
-								rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7).toCharArray()[0],
-								rs.getString(8));
+								rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), new Login(Long.parseLong(rs.getString(11)), Long.parseLong(rs.getString(15)), rs.getString(13), ""));
 						customerList.add(c);
 					}
 					j = new JSONArray(customerList);
@@ -705,7 +458,8 @@ public class DBManager {
 						j.put("phoneNo", rs.getString(6));
 						j.put("gender", rs.getString(7));
 						j.put("address", rs.getString(8));
-						j.put("companyName", rs.getString(10));
+						j.put("email", rs.getString(13));
+						j.put("roleId", rs.getString(15));
 					}
 				} else {
 					j.put("status", "error");

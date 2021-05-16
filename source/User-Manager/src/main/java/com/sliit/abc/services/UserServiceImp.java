@@ -9,21 +9,16 @@ public class UserServiceImp implements UserService {
 
 	@Override
 	public JSONObject registerCustomer(String firstName, String lastName, String initials, String dob, String phoneNo,
-			String gender, String address, String email, String password, String companyName) {
+			String gender, String address, String email, String password) {
 		return DBManager.CustomerClass.registerCustomer(firstName, lastName, initials, dob, phoneNo, gender, address,
-				email, password, String.valueOf(3), companyName);
-	}
-
-	@Override
-	public JSONObject activateAccount(String email, String code) {
-		return DBManager.LoginClass.emailConfirmation(email, code);
+				email, password);
 	}
 
 	@Override
 	public JSONObject updateCustomerDetails(String firstName, String lastName, String initials, String dob,
-			String phoneNo, String gender, String address, String companyName,String id) {
-		DBManager.UserClass.updateUserDetails(id, firstName, lastName, initials, dob, phoneNo, gender, address);
-		return DBManager.CustomerClass.updateCustomerDetails(companyName, id);
+			String phoneNo, String gender, String address,Long id) {
+		DBManager.UserClass.updateUserDetails(String.valueOf(id), firstName, lastName, initials, dob, phoneNo, gender, address);
+		return DBManager.CustomerClass.updateCustomerDetails(String.valueOf(id));
 	}
 
 	@Override

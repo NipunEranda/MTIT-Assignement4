@@ -7,13 +7,11 @@ public interface UserService {
 
 	// POST
 	public JSONObject registerCustomer(String firstName, String lastName, String initials, String dob, String phoneNo,
-			String gender, String address, String email, String password, String companyName);
-
-	public JSONObject activateAccount(String email, String code);
+			String gender, String address, String email, String password);
 
 	// PUT
 	public JSONObject updateCustomerDetails(String firstName, String lastName, String initials, String dob,
-			String phoneNo, String gender, String address, String companyName, String id);
+			String phoneNo, String gender, String address, Long id);
 
 	// DELETE
 	public JSONObject deleteCustomer(String id);

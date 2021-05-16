@@ -7,10 +7,6 @@ public class Login {
 	private String email;
 	private String password;
 
-	public Login() {
-
-	}
-
 	public Login(long loginId, long loginRole, String email, String password) {
 		super();
 		this.loginId = loginId;

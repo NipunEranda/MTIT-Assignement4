@@ -39,7 +39,6 @@ CREATE TABLE usr_Role (
 
 CREATE TABLE usr_dtl_Customer(
     id bigint(200) NOT NULL,
-    companyName varchar(255) NOT NULL,
     CONSTRAINT usr_Client_pk PRIMARY KEY(id),
     CONSTRAINT usr_Client_fk_id FOREIGN KEY(id) REFERENCES usr_User(id)
 );
@@ -362,7 +361,6 @@ INSERT INTO item VALUES
                 IN roleId bigint(200),
                 IN confirmationCode varchar(8),
                 /*usr_dtl_Customer*/
-                IN companyName varchar(255),
                 OUT status int
                 )
                 BEGIN
@@ -389,7 +387,7 @@ INSERT INTO item VALUES
                         INSERT INTO usr_User VALUES(0, fname, lname, initials, dob, phoneNo, gender, address, 1, 0);
                         SELECT MAX(id) INTO userID FROM usr_User;
                         INSERT INTO usr_Login VALUES(userID, email, password, roleId, 0, confirmationCode, 0);
-                        INSERT INTO usr_dtl_Customer VALUES(userID, companyName);
+                        INSERT INTO usr_dtl_Customer VALUES(userID);
                         SET status = 1;
 
                     COMMIT;
@@ -401,7 +399,13 @@ INSERT INTO item VALUES
             delimiter //
 
                 CREATE PROCEDURE customer_updateCustomerDetails(
-                    IN companyName varchar(255),
+                    IN fname varchar(255),
+                    IN lname varchar(255),
+                    IN initials varchar(255),
+                    IN dob date,
+                    IN phoneNo varchar(10),
+                    IN gender varchar(1),
+                    IN address varchar(255),
                     IN userId bigint(200),
                     OUT status int
                     )
@@ -417,9 +421,15 @@ INSERT INTO item VALUES
 
                         START TRANSACTION;
 
-                            UPDATE usr_dtl_Customer
-                            SET usr_dtl_Customer.companyName = companyName
-                            WHERE usr_dtl_Customer.id = userId;
+                            UPDATE usr_User uu
+                            SET uu.fname = fname,
+                            uu.lname = lname,
+                            uu.initials = initials,
+                            uu.dob = dob,
+                            uu.phoneNo = phoneNo,
+                            uu.gender = gender,
+                            uu.address = address
+                            WHERE uu.id = userId;
                             
                             SET status = 1;
 
