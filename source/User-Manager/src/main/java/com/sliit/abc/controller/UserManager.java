@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sliit.abc.model.Customer;
+import com.sliit.abc.model.Login;
+import com.sliit.abc.model.ResetPassword;
 import com.sliit.abc.services.UserService;
 import com.sliit.abc.services.UserServiceImp;
 
@@ -31,11 +33,23 @@ public class UserManager {
 				customer.getDob(), customer.getPhoneNo(), customer.getGender(), customer.getAddress(), customer.getLogin().getEmail(), customer.getLogin().getPassword()).toString();
 	}
 	
+	@PostMapping(value = "/customerLogin", consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public String customerLogin(@RequestBody Login login) {
+		return us.customerLogin(login.getEmail(), login.getPassword()).toString();
+	}
+	
 	@PutMapping(value = "/updateCustomer", consumes = "application/json", produces = "application/json")
 	@ResponseBody
 	public String updateCustomer(@RequestBody Customer customer) {
 		return us.updateCustomerDetails(customer.getFirstName(), customer.getLastName(), customer.getInitials(),
 				customer.getDob(), customer.getPhoneNo(), customer.getGender(), customer.getAddress(), customer.getId()).toString();
+	}
+	
+	@PutMapping(value = "/resetPassword", consumes = "application/json", produces = "application/json")
+	@ResponseBody
+	public String resetPassword(@RequestBody ResetPassword resetPassword) {
+		return us.resetPassword(resetPassword.getCurrentPassword(), resetPassword.getNewPassword(), resetPassword.getEmail()).toString();
 	}
 	
 	@DeleteMapping(value = "/deleteCustomer/{id}")

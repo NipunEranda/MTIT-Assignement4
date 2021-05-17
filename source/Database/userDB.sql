@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS `abc_db`;
+DROP DATABASE IF EXISTS `user_db`;
 
-CREATE DATABASE IF NOT EXISTS `abc_db` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `abc_db`;
+CREATE DATABASE IF NOT EXISTS `user_db` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `user_db`;
 
 CREATE TABLE usr_User (
   id bigint(200) AUTO_INCREMENT NOT NULL,
@@ -43,73 +43,10 @@ CREATE TABLE usr_dtl_Customer(
     CONSTRAINT usr_Client_fk_id FOREIGN KEY(id) REFERENCES usr_User(id)
 );
 
-CREATE TABLE supplier(
-    id bigint(200) NOT NULL,
-    companyName varchar(255) NOT NULL,
-    CONSTRAINT usr_Client_pk PRIMARY KEY(id)
-);
-
-CREATE TABLE itemType(
-  id bigint(200) AUTO_INCREMENT NOT NULL,
-  name varchar(255) NOT NULL,
-  CONSTRAINT itemType_pk PRIMARY KEY(id)
-);
-
-CREATE TABLE item(
-  id bigint(200) AUTO_INCREMENT NOT NULL,
-  name varchar(255) NOT NULL,
-  description text NOT NULL,
-  itemType bigint(200) NOT NULL,
-  price double NOT NULL,
-  CONSTRAINT item_pk PRIMARY KEY(id),
-  CONSTRAINT item_fk_itemType FOREIGN KEY(itemType) REFERENCES itemType(id)
-);
-
-CREATE TABLE orderI(
-  id bigint(200) AUTO_INCREMENT NOT NULL,
-  user bigint(200) NOT NULL,
-  orderedDate date,
-  totalPrice double NOT NULL,
-  isProcessed boolean NOT NULL,
-  CONSTRAINT orderI_pk PRIMARY KEY(id),
-  CONSTRAINT orderI_fk_user FOREIGN KEY(user) REFERENCES usr_dtl_Customer(id)
-);
-
-CREATE TABLE item_order(
-  orderId bigint(200) NOT NULL,
-  item bigint(200) NOT NULL,
-  CONSTRAINT item_orderId_pk PRIMARY KEY(orderId, item),
-  CONSTRAINT item_orderId_fk_orderI FOREIGN KEY(orderId) REFERENCES orderI(id),
-  CONSTRAINT item_orderId_fk_item FOREIGN KEY(item) REFERENCES item(id)
-);
-
-CREATE TABLE cart(
-  id bigint(200) AUTO_INCREMENT NOT NULL,
-  user bigint(200) NOT NULL,
-  savedDate date,
-  totalPrice double NOT NULL,
-  CONSTRAINT cart_pk PRIMARY KEY(id),
-  CONSTRAINT cart_fk_user FOREIGN KEY(user) REFERENCES usr_dtl_Customer(id)
-);
-
-CREATE TABLE item_cart(
-  cart bigint(200) NOT NULL,
-  item bigint(200) NOT NULL,
-  CONSTRAINT item_cart_pk PRIMARY KEY(cart, item),
-  CONSTRAINT item_cart_fk_cart FOREIGN KEY(cart) REFERENCES cart(id),
-  CONSTRAINT item_cart_fk_item FOREIGN KEY(item) REFERENCES item(id)
-);
-
 INSERT INTO usr_Role (id, roleName, roleDesc, isActive) VALUES
 (0, 'Admin', 'Admin', 1),
 (0, 'Manager', 'Manager', 1),
 (0, 'Customer', 'Customer', 1);
-
-INSERT INTO itemType(id, name) VALUES
-(0, 'Antique');
-
-INSERT INTO item VALUES
-(0, 'Wardrobe', 'A wardrobe or armoire is a standing closet used for storing clothes. The earliest wardrobe was a chest, and it was not until some degree of luxury was attained in regal palaces and the castles of powerful nobles that separate accommodation was provided for the apparel of the great.', 1, 200000.00);
 
 /*Start Of Procedures*/
     /*Start Of Login Management*/

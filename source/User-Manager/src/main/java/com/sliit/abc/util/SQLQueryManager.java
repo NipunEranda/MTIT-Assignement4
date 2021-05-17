@@ -121,10 +121,10 @@ public class SQLQueryManager {
 	
 	//Customer Management
 	private final String CUSTOMER_REGISTRATION = "CALL customer_Registration(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final String CUSTOMER_UPDATECUSTOMERDETAILS = "CALL customer_updateCustomerDetails(?, ?, ?)";
+	private final String CUSTOMER_UPDATECUSTOMERDETAILS = "CALL customer_updateCustomerDetails(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final String CUSTOMER_DELETECUSTOMER = "CALL customer_deleteCustomer(?, ?)";
-	private final String CUSTOMER_GETALLCUSTOMERS = "SELECT * FROM usr_User uu, usr_dtl_Customer udc, usr_login ul";
-	private final String CUSTOMER_GETCUSTOMERBYID = "SELECT * FROM usr_User uu, usr_dtl_Customer udc, usr_login ul WHERE udc.id = uu.id and ul.userId = uu.id and uu.id = ?";
+	private final String CUSTOMER_GETALLCUSTOMERS = "SELECT * FROM usr_User uu, usr_dtl_Customer udc, usr_Login ul WHERE udc.id = uu.id and ul.userId = uu.id";
+	private final String CUSTOMER_GETCUSTOMERBYID = "SELECT * FROM usr_User uu, usr_dtl_Customer udc, usr_Login ul WHERE udc.id = uu.id and ul.userId = uu.id and uu.id = ?";
 
 	public String getCUSTOMER_REGISTRATION() {
 		return CUSTOMER_REGISTRATION;

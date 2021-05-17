@@ -17,8 +17,7 @@ public class UserServiceImp implements UserService {
 	@Override
 	public JSONObject updateCustomerDetails(String firstName, String lastName, String initials, String dob,
 			String phoneNo, String gender, String address,Long id) {
-		DBManager.UserClass.updateUserDetails(String.valueOf(id), firstName, lastName, initials, dob, phoneNo, gender, address);
-		return DBManager.CustomerClass.updateCustomerDetails(String.valueOf(id));
+		return DBManager.CustomerClass.updateCustomerDetails(String.valueOf(id), firstName, lastName, initials, dob, phoneNo, gender, address);
 	}
 
 	@Override
@@ -34,6 +33,17 @@ public class UserServiceImp implements UserService {
 	@Override
 	public JSONArray getCustomerList() {
 		return DBManager.CustomerClass.getAllCustomers();
+	}
+
+	
+	@Override
+	public JSONObject resetPassword(String currentPassword, String newPassowrd, String email) {
+		return DBManager.LoginClass.resetPassword(email, currentPassword, newPassowrd);
+	}
+
+	@Override
+	public JSONObject customerLogin(String email, String password) {
+		return DBManager.LoginClass.login(email, password);
 	}
 
 }

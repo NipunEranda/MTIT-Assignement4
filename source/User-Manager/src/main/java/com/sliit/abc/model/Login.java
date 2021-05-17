@@ -6,11 +6,10 @@ public class Login {
 	private long loginRole;
 	private String email;
 	private String password;
+	private String newPassword;
 
-	public Login(long loginId, long loginRole, String email, String password) {
+	public Login(String email, String password) {
 		super();
-		this.loginId = loginId;
-		this.loginRole = loginRole;
 		this.email = email;
 		this.password = password;
 	}
@@ -45,6 +44,14 @@ public class Login {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getNewPassword() {
+		return newPassword;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 
 }

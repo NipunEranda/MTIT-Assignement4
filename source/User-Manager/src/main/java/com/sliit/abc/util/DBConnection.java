@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class DBConnection {
 
 	private static final String DB_HOST = "localhost:3306";
-	private static final String DB_NAME = "abc_db";
+	private static final String DB_NAME = "user_db";
 	
 	private static String DBDriver = "com.mysql.cj.jdbc.Driver";
 	private static String DBUrl = "jdbc:mysql://" + DB_HOST + "/" + DB_NAME + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
