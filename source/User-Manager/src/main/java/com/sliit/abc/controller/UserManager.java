@@ -22,6 +22,7 @@ import com.sliit.abc.services.UserServiceImp;
 
 @RestController
 @EnableAutoConfiguration
+@RequestMapping("/api")
 public class UserManager {
 
 	UserService us = new UserServiceImp();
