@@ -393,8 +393,6 @@ INSERT INTO usr_Role (id, roleName, roleDesc, isActive) VALUES
 
                         START TRANSACTION;
 
-                            DELETE FROM cart WHERE cart.user = id;
-                            DELETE FROM orderI WHERE orderI.user = id;
                             DELETE FROM usr_dtl_Customer WHERE usr_dtl_Customer.id = id;
                             DELETE FROM usr_Login WHERE usr_Login.userId = id;
                             DELETE FROM usr_User WHERE usr_User.id = id;

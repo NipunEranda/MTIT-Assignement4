@@ -12,7 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.sliit.abc.model.Customer;
-import com.sliit.abc.model.Login;
+import com.sliit.abc.model.LoginRequest;
+import com.sliit.abc.model.LoginResponse;
 import com.sliit.abc.model.Role;
 import com.sliit.abc.util.Crypt;
 import com.sliit.abc.util.DBConnection;
@@ -307,7 +308,9 @@ public class DBManager {
 				rs = ps.executeQuery();
 				if (rs != null) {
 					while (rs.next()) {
-						Login l = new Login(rs.getString(13), "");
+						LoginResponse l = new LoginResponse();
+						l.setEmail(rs.getString(13));
+						l.setPassword("");
 						l.setLoginRole(Long.parseLong(rs.getString(15)));
 						l.setLoginId(Long.parseLong(rs.getString(1)));
 						Customer c = new Customer(Long.parseLong(rs.getString(1)), rs.getString(2), rs.getString(3),

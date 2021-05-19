@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sliit.abc.model.Customer;
-import com.sliit.abc.model.Login;
+import com.sliit.abc.model.LoginRequest;
 import com.sliit.abc.model.ResetPassword;
 import com.sliit.abc.services.UserService;
 import com.sliit.abc.services.UserServiceImp;
@@ -36,7 +36,7 @@ public class UserManager {
 	
 	@PostMapping(value = "/customerLogin", consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public String customerLogin(@RequestBody Login login) {
+	public String customerLogin(@RequestBody LoginRequest login) {
 		return us.customerLogin(login.getEmail(), login.getPassword()).toString();
 	}
 	
